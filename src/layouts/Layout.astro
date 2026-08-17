@@ -1,0 +1,73 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { t } from '../i18n/index';
+
+interface Props {
+  title: string;
+  description?: string;
+  noindex?: boolean;
+  ogImage?: string;
+  jsonLd?: Record<string, unknown>;
+}
+
+const { title, description = t('site.tagline'), noindex = false, ogImage, jsonLd } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const ogImageUrl = ogImage
+  ? new URL(ogImage, Astro.site).href
+  : new URL(`${base}og-default.png`, Astro.site).href;
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+---
+
+<!doctype html>
+<html lang="pt-BR" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta property="og:title" content={title === t('site.name') ? title : `${title} — ${t('site.name')}`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:url" content={pageUrl} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href={pageUrl} />
+    <title>{title === t('site.name') ? title : `${title} — ${t('site.name')}`}</title>
+    <script is:inline>
+      // Dark is the default. Light applies only when explicitly chosen, so a
+      // visitor with no stored preference gets dark — including with JS disabled,
+      // because the attribute below is server-rendered.
+      try {
+        if (localStorage.getItem('peca-testada-theme') === 'light') {
+          delete document.documentElement.dataset.theme;
+        }
+      } catch (_) {}
+    </script>
+    <link rel="icon" href={`${base}favicon.svg`} type="image/svg+xml" />
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+  </head>
+  <body class="min-h-screen bg-bg text-body">
+    <Header><slot name="subnav" slot="subnav" /></Header>
+    <main class="max-w-6xl mx-auto px-4 py-8">
+      <slot />
+    </main>
+    <Footer />
+    <script>
+      document.getElementById('theme-toggle')?.addEventListener('click', () => {
+        const root = document.documentElement;
+        const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+        if (next === 'dark') root.dataset.theme = 'dark';
+        else delete root.dataset.theme;
+        try {
+          // Only the non-default is stored, so clearing site data returns to dark.
+          if (next === 'light') localStorage.setItem('peca-testada-theme', 'light');
+          else localStorage.removeItem('peca-testada-theme');
+        } catch (_) {}
+      });
+    </script>
+  </body>
+</html>
+

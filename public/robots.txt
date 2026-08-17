@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://peca-testada.github.io/sitemap.xml
