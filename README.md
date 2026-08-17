@@ -1,6 +1,6 @@
 # Peça Testada
 
-Site de acessórios de moto **avaliados por quem realmente usou** — com quilometragem real, dicas de instalação e links de onde comprar.
+Site de acessórios de moto **avaliados por quem realmente usou** — com quilometragem real, dicas de instalação e links de onde comprar
 
 É um site estático (Astro), sem login, sem carrinho e sem banco de dados. Todo o conteúdo mora em arquivos dentro do repositório: para publicar uma análise nova você cria um arquivo Markdown e faz commit. A monetização é por links de afiliado e conteúdo patrocinado, sempre declarados na página `/transparency`.
 
